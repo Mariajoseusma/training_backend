@@ -1,6 +1,7 @@
 'use strict'
 
 const User = use('App/Models/User');
+const VerificationService = use('App/Services/VerificationService')
 
 class UserController {
     async store({request, response}){
@@ -17,6 +18,7 @@ class UserController {
     async edit({request, response}){
         const { id, name, surname, cellphone } = request.all();
         const user = await User.find(id);
+        VerificationService.verifyResource(user);
         user.merge({name, surname, cellphone})
         await user.save();
         console.log(user);
