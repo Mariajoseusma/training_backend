@@ -17,3 +17,11 @@
 const Route = use('Route')
 
 Route.on('/').render('welcome')
+
+Route.group(() => {
+    //USERS 
+    Route.post('users/store', 'UserController.store');      
+    Route.post('users/edit', 'UserController.edit');      
+    Route.get('users/search', 'UserController.search');      
+    Route.post('users/delete', 'UserController.delete');      
+  }).prefix('api/v1');
