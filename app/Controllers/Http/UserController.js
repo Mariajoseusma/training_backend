@@ -28,6 +28,7 @@ class UserController {
     async search({request}){
         const {id} = request.all();
         const user = await User.find(id);
+        VerificationService.verifyResource(user);
         const {name, surname, cellphone} = user;
         // return {name, surname, cellphone};
         return user;
@@ -36,6 +37,7 @@ class UserController {
     async delete({ request, response }){
         const {id} = request.all();
         const user = await User.find(id);
+        VerificationService.verifyResource(user);
         await user.delete();
         return response.status(206).json({ status: "ok" });
     }
