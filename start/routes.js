@@ -15,13 +15,15 @@
 
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
+const { validate } = use('Validator')
 
 Route.on('/').render('welcome')
 
 Route.group(() => {
     //USERS 
-    Route.post('users/store', 'UserController.store');      
+    Route.post('users/store', 'UserController.store').validator('StoreUser');
     Route.post('users/edit', 'UserController.edit');      
-    Route.get('users/search', 'UserController.search');      
-    Route.post('users/delete', 'UserController.delete');      
+    Route.post('users/search', 'UserController.search');      
+    Route.post('users/delete', 'UserController.delete');     
+    Route.get('users/getall', 'UserController.getall');     
   }).prefix('api/v1');

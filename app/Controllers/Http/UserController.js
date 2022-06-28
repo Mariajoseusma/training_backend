@@ -2,6 +2,7 @@
 
 const User = use('App/Models/User');
 const VerificationService = use('App/Services/VerificationService')
+const { validate } = use('Validator')
 
 class UserController {
     async store({request, response}){
@@ -12,21 +13,26 @@ class UserController {
             cellphone
         });
         // return response.send("ok")
-        return response.status(206).json({ status: "ok" });
+        // return response.status(206).json({ status: "ok" });
+        return user;
     }
 
     async edit({request, response}){
         const { id, name, surname, cellphone } = request.all();
-        const user = await User.find(id);
-        VerificationService.verifyResource(user);
-        user.merge({name, surname, cellphone})
-        await user.save();
-        console.log(user);
-        return response.status(206).json({ status: "ok" });
+        if(id && (name || surname || cellphone)){
+            const user = await User.find(id);
+            VerificationService.verifyResource(user);
+            user.merge({name, surname, cellphone})
+            await user.save();
+            console.log(user);
+            return await User.find(id);
+        }
+        return response.send("error")
     }
 
-    async search({request}){
-        const {id} = request.all();
+    async search({request, response}){
+        const {id} = request.all();   
+        VerificationService.verifyResource(id);
         const user = await User.find(id);
         VerificationService.verifyResource(user);
         const {name, surname, cellphone} = user;
@@ -40,6 +46,10 @@ class UserController {
         VerificationService.verifyResource(user);
         await user.delete();
         return response.status(206).json({ status: "ok" });
+    }
+
+    async getall({response}){
+        return await User.all();
     }
 }
 
